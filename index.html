@@ -1,1 +1,795 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PULSE — Social Media Services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #08090D;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-active: rgba(168, 85, 247, 0.4);
+      --text-main: #FFFFFF;
+      --text-muted: #94A3B8;
+      --accent-purple: #a855f7;
+      --accent-blue: #3b82f6;
+      --kaspi-red: #f14635;
+      --gradient-primary: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+      --fire-gradient: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+      padding-bottom: 4rem;
+    }
+
+    /* Ambient Glow Background */
+    .bg-glow-1 {
+      position: absolute;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.18) 0%, rgba(59, 130, 246, 0.12) 40%, rgba(8, 9, 13, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header */
+    header {
+      width: 100%;
+      max-width: 1200px;
+      padding: 2rem 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.3));
+    }
+
+    /* Step Indicator */
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .step-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--card-border);
+      transition: all 0.3s ease;
+    }
+
+    .step-dot.active {
+      background: var(--accent-purple);
+      box-shadow: 0 0 12px var(--accent-purple);
+      transform: scale(1.3);
+    }
+
+    .step-line {
+      width: 30px;
+      height: 2px;
+      background: var(--card-border);
+    }
+
+    /* Screen Container */
+    .screen {
+      width: 100%;
+      max-width: 1000px;
+      padding: 0 1.5rem;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Typography */
+    .hero-title {
+      font-size: 2.3rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 0.8rem;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 2.5rem;
+      font-weight: 500;
+    }
+
+    /* Platforms Grid */
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.2rem;
+      width: 100%;
+      max-width: 850px;
+    }
+
+    .platform-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.8rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      color: var(--text-main);
+    }
+
+    .platform-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--card-border-active);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(168, 85, 247, 0.15);
+    }
+
+    .platform-btn svg {
+      width: 36px;
+      height: 36px;
+      fill: currentColor;
+    }
+
+    .platform-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    /* Service Section & Cards */
+    .section-title {
+      width: 100%;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin: 2rem 0 1rem;
+      color: var(--text-main);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    .package-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .package-card:hover {
+      border-color: var(--card-border-active);
+      transform: translateY(-4px);
+    }
+
+    .package-card.sale {
+      border-color: rgba(249, 115, 22, 0.3);
+      background: linear-gradient(180deg, rgba(249, 115, 22, 0.05) 0%, var(--card-bg) 100%);
+    }
+
+    .sale-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--fire-gradient);
+      color: #FFF;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.25rem 0.6rem;
+      border-radius: 12px;
+    }
+
+    .package-amount {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.8rem;
+    }
+
+    .price-box {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+    }
+
+    .old-price {
+      color: var(--text-muted);
+      text-decoration: line-through;
+      font-size: 0.95rem;
+    }
+
+    .new-price {
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    .btn-buy {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .package-card:hover .btn-buy {
+      background: var(--gradient-primary);
+      border-color: transparent;
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+    }
+
+    /* Back Button */
+    .btn-back {
+      align-self: flex-start;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Form Boxes */
+    .form-box {
+      width: 100%;
+      max-width: 520px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 2rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+
+    .form-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+    }
+
+    .summary-card {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+      font-size: 0.95rem;
+    }
+
+    .summary-row:last-child {
+      margin-bottom: 0;
+      padding-top: 0.6rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .summary-label { color: var(--text-muted); }
+    .summary-value { font-weight: 700; color: var(--text-main); }
+
+    .btn-submit {
+      width: 100%;
+      padding: 1.1rem;
+      border: none;
+      border-radius: 14px;
+      background: var(--gradient-primary);
+      color: var(--text-main);
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(168, 85, 247, 0.5);
+    }
+
+    /* Kaspi Payment Box */
+    .kaspi-card {
+      background: rgba(241, 70, 53, 0.05);
+      border: 1px solid rgba(241, 70, 53, 0.3);
+      border-radius: 20px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .kaspi-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--kaspi-red);
+      color: white;
+      font-weight: 800;
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 4px 15px rgba(241, 70, 53, 0.4);
+    }
+
+    .kaspi-phone {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #FFF;
+      margin-bottom: 0.4rem;
+    }
+
+    .kaspi-name {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .btn-copy {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-copy:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 600px) {
+      .hero-title { font-size: 1.8rem; }
+      .platform-grid { grid-template-columns: repeat(2, 1fr); }
+      .cards-grid { grid-template-columns: 1fr; }
+      .kaspi-phone { font-size: 1.45rem; }
+      .form-box { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow-1"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">⚡ PULSE</div>
+  </header>
+
+  <!-- Step Bar -->
+  <div class="step-indicator">
+    <div class="step-dot active" id="dot1"></div>
+    <div class="step-line"></div>
+    <div class="step-dot" id="dot2"></div>
+    <div class="step-line"></div>
+    <div class="step-dot" id="dot3"></div>
+    <div class="step-line"></div>
+    <div class="step-dot" id="dot4"></div>
+  </div>
+
+  <!-- 1. БАСТЫ БЕТ (Платформа таңдау) -->
+  <main class="screen active" id="screen1">
+    <h1 class="hero-title">Әлеуметтік желілеріңізді дамыту</h1>
+    <p class="hero-subtitle">Қажетті платформаны таңдаңыз</p>
+
+    <div class="platform-grid">
+      <button class="platform-btn" onclick="selectPlatform('TikTok')">
+        <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.86.12V9.3a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.56 6.34 6.34 0 0 0 9.34 22a6.34 6.34 0 0 0 6.34-6.34V9.27a8.16 8.16 0 0 0 4.91 1.62V7.44a4.85 4.85 0 0 1-1-.75z"/></svg>
+        <span class="platform-name">TikTok</span>
+      </button>
+
+      <button class="platform-btn" onclick="selectPlatform('Instagram')">
+        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        <span class="platform-name">Instagram</span>
+      </button>
+
+      <button class="platform-btn" onclick="selectPlatform('YouTube')">
+        <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        <span class="platform-name">YouTube</span>
+      </button>
+
+      <button class="platform-btn" onclick="selectPlatform('Telegram')">
+        <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.562 8.161c-.18.717-.962 4.084-1.362 5.411-.168.56-.372.748-.571.766-.435.039-.766-.288-1.187-.564-.658-.431-1.03-.698-1.668-1.118-.738-.487-.26-.755.161-1.192.11-.114 2.022-1.854 2.059-2.012.005-.021.009-.102-.039-.144-.048-.042-.119-.028-.171-.016-.073.017-1.242.79-3.508 2.32-.332.228-.632.34-.901.334-.297-.006-.869-.168-1.294-.306-.522-.17-.937-.26-.901-.549.019-.151.229-.306.63-.465 2.467-1.073 4.113-1.781 4.939-2.123 2.349-.974 2.836-1.144 3.155-1.15.07 0 .228.017.33.099.086.07.11.165.121.233.012.076.027.249.016.393z"/></svg>
+        <span class="platform-name">Telegram</span>
+      </button>
+
+      <button class="platform-btn" onclick="selectPlatform('Басқа')">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+        <span class="platform-name">Басқа</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- 2. ҚЫЗМЕТ ЖӘНЕ ПАКЕТ ТАҢДАУ -->
+  <main class="screen" id="screen2">
+    <button class="btn-back" onclick="goToScreen(1)">← Платформаны ауыстыру</button>
+    <h1 class="hero-title" id="selectedPlatformTitle">TikTok</h1>
+    <p class="hero-subtitle">Пакетті таңдаңыз</p>
+
+    <!-- FOLLOWERS -->
+    <div class="section-title">👤 FOLLOWERS</div>
+    <div class="cards-grid">
+      <div class="package-card">
+        <div>
+          <div class="package-amount">1 000</div>
+          <div class="price-box"><span class="new-price">800 ₸</span></div>
+        </div>
+        <button class="btn-buy" onclick="selectPackage('Followers', '1 000', '800 ₸')">Сатып алу →</button>
+      </div>
+
+      <div class="package-card">
+        <div>
+          <div class="package-amount">3 000</div>
+          <div class="price-box"><span class="new-price">2 600 ₸</span></div>
+        </div>
+        <button class="btn-buy" onclick="selectPackage('Followers', '3 000', '2 600 ₸')">Сатып алу →</button>
+      </div>
+
+      <div class="package-card sale">
+        <span class="sale-badge">🔥 SALE</span>
+        <div>
+          <div class="package-amount">5 000</div>
+          <div class="price-box">
+            <span class="old-price">8 600 ₸</span>
+            <span class="new-price">4 600 ₸</span>
+          </div>
+        </div>
+        <button class="btn-buy" onclick="selectPackage('Followers', '5 000', '4 600 ₸')">Сатып алу →</button>
+      </div>
+
+      <div class="package-card sale">
+        <span class="sale-badge">🔥 SALE</span>
+        <div>
+          <div class="package-amount">10 000</div>
+          <div class="price-box">
+            <span class="old-price">9 000 ₸</span>
+            <span class="new-price">6 500 ₸</span>
+          </div>
+        </div>
+        <button class="btn-buy" onclick="selectPackage('Followers', '10 000', '6 500 ₸')">Сатып алу →</button>
+      </div>
+    </div>
+
+    <!-- VIEWS -->
+    <div class="section-title">👁️ VIEWS</div>
+    <div class="cards-grid">
+      <div class="package-card">
+        <div>
+          <div class="package-amount">100 000</div>
+          <div class="price-box"><span class="new-price">9 600 ₸</span></div>
+        </div>
+        <button class="btn-buy" onclick="selectPackage('Views', '100 000', '9 600 ₸')">Сатып алу →</button>
+      </div>
+
+      <div class="package-card">
+        <div>
+          <div class="package-amount">250 000</div>
+          <div class="price-box"><span class="new-price">12 300 ₸</span></div>
+        </div>
+        <button class="btn-buy" onclick="selectPackage('Views', '250 000', '12 300 ₸')">Сатып алу →</button>
+      </div>
+
+      <div class="package-card">
+        <div>
+          <div class="package-amount">500 000</div>
+          <div class="price-box"><span class="new-price">21 600 ₸</span></div>
+        </div>
+        <button class="btn-buy" onclick="selectPackage('Views', '500 000', '21 600 ₸')">Сатып алу →</button>
+      </div>
+
+      <div class="package-card">
+        <div>
+          <div class="package-amount">1 000 000</div>
+          <div class="price-box"><span class="new-price">32 900 ₸</span></div>
+        </div>
+        <button class="btn-buy" onclick="selectPackage('Views', '1 000 000', '32 900 ₸')">Сатып алу →</button>
+      </div>
+    </div>
+
+    <!-- LIKES -->
+    <div class="section-title">❤️ LIKES</div>
+    <div class="cards-grid">
+      <div class="package-card">
+        <div>
+          <div class="package-amount">30 000</div>
+          <div class="price-box"><span class="new-price">3 200 ₸</span></div>
+        </div>
+        <button class="btn-buy" onclick="selectPackage('Likes', '30 000', '3 200 ₸')">Сатып алу →</button>
+      </div>
+
+      <div class="package-card">
+        <div>
+          <div class="package-amount">100 000</div>
+          <div class="price-box"><span class="new-price">8 600 ₸</span></div>
+        </div>
+        <button class="btn-buy" onclick="selectPackage('Likes', '100 000', '8 600 ₸')">Сатып алу →</button>
+      </div>
+
+      <div class="package-card">
+        <div>
+          <div class="package-amount">250 000</div>
+          <div class="price-box"><span class="new-price">16 500 ₸</span></div>
+        </div>
+        <button class="btn-buy" onclick="selectPackage('Likes', '250 000', '16 500 ₸')">Сатып алу →</button>
+      </div>
+
+      <div class="package-card">
+        <div>
+          <div class="package-amount">500 000</div>
+          <div class="price-box"><span class="new-price">21 900 ₸</span></div>
+        </div>
+        <button class="btn-buy" onclick="selectPackage('Likes', '500 000', '21 900 ₸')">Сатып алу →</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- 3. АККАУНТ СІЛТЕМЕСІ -->
+  <main class="screen" id="screen3">
+    <button class="btn-back" onclick="goToScreen(2)">← Артқа</button>
+
+    <div class="form-box">
+      <h2 class="form-title">Аккаунт сілтемесін енгізіңіз</h2>
+      
+      <div class="input-group">
+        <label class="input-label">Профиль/видео сілтемесі:</label>
+        <input type="url" id="accountLink" class="input-field" placeholder="https://..." required>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-row">
+          <span class="summary-label">Платформа:</span>
+          <span class="summary-value" id="sumPlatform">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Қызмет:</span>
+          <span class="summary-value" id="sumService">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Пакет:</span>
+          <span class="summary-value" id="sumPackage">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Төленетін сома:</span>
+          <span class="summary-value" id="sumPrice" style="color: var(--accent-purple);">-</span>
+        </div>
+      </div>
+
+      <button class="btn-submit" onclick="proceedToKaspiDetails()">Жалғастыру →</button>
+    </div>
+  </main>
+
+  <!-- 4. KASPI ТӨЛЕМ ДЕРЕКТЕРІ ЖӘНЕ ТӨЛЕМГЕ ӨТУ -->
+  <main class="screen" id="screen4">
+    <button class="btn-back" onclick="goToScreen(3)">← Өңдеу</button>
+
+    <div class="form-box">
+      <div style="text-align: center;">
+        <div class="kaspi-badge">Kaspi.kz</div>
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.2rem;">Төлем деректері</h2>
+      </div>
+
+      <div class="kaspi-card">
+        <div class="kaspi-phone">8 707 515 34 05</div>
+        <div class="kaspi-name">Алушы: Нұрасыл А.</div>
+        <button class="btn-copy" onclick="copyKaspiNumber()">
+          <span id="copyBtnText">Нөмірді көшіру 📋</span>
+        </button>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-row">
+          <span class="summary-label">Тапсырыс сомасы:</span>
+          <span class="summary-value" id="kaspiFinalPrice" style="color: var(--accent-purple); font-size: 1.2rem;">-</span>
+        </div>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 0.88rem; text-align: center; margin-bottom: 1.5rem; line-height: 1.4;">
+        «Жалғастыру» батырмасын басқанда нөмір автоматты түрде көшіріліп, Kaspi.kz төлем беті ашылады.
+      </p>
+
+      <button class="btn-submit" style="background: var(--kaspi-red); box-shadow: 0 6px 20px rgba(241, 70, 53, 0.4);" onclick="redirectToKaspiPay()">
+        Kaspi төлем жасауға өту 🚀
+      </button>
+    </div>
+  </main>
+
+  <script>
+    // State management
+    let state = {
+      platform: '',
+      service: '',
+      packageAmount: '',
+      price: '',
+      link: ''
+    };
+
+    const KASPI_PHONE = "87075153405";
+
+    function goToScreen(screenNumber) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(`screen${screenNumber}`).classList.add('active');
+
+      // Update progress dots
+      for(let i = 1; i <= 4; i++) {
+        const dot = document.getElementById(`dot${i}`);
+        if (i <= screenNumber) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectPlatform(platformName) {
+      state.platform = platformName;
+      document.getElementById('selectedPlatformTitle').innerText = platformName;
+      goToScreen(2);
+    }
+
+    function selectPackage(serviceName, amount, price) {
+      state.service = serviceName;
+      state.packageAmount = amount;
+      state.price = price;
+
+      // Update Summary Data
+      document.getElementById('sumPlatform').innerText = state.platform;
+      document.getElementById('sumService').innerText = state.service;
+      document.getElementById('sumPackage').innerText = state.packageAmount;
+      document.getElementById('sumPrice').innerText = state.price;
+      document.getElementById('kaspiFinalPrice').innerText = state.price;
+
+      goToScreen(3);
+    }
+
+    function proceedToKaspiDetails() {
+      const linkInput = document.getElementById('accountLink');
+      if (!linkInput.value.trim()) {
+        alert('Өтініш, аккаунт/видео сілтемесін енгізіңіз!');
+        linkInput.focus();
+        return;
+      }
+      state.link = linkInput.value.trim();
+      goToScreen(4);
+    }
+
+    function copyKaspiNumber() {
+      navigator.clipboard.writeText(KASPI_PHONE).then(() => {
+        const copyTextBtn = document.getElementById('copyBtnText');
+        copyTextBtn.innerText = 'Көшірілді! ✓';
+        setTimeout(() => {
+          copyTextBtn.innerText = 'Нөмірді көшіру 📋';
+        }, 2000);
+      });
+    }
+
+    function redirectToKaspiPay() {
+      // Copy phone number automatically for convenience
+      navigator.clipboard.writeText(KASPI_PHONE);
+
+      // Kaspi Transfer URL
+      const kaspiPayUrl = 'https://kaspi.kz/pay/KaspiPayService';
+      
+      // Open Kaspi payment / transfer link
+      window.open(kaspiPayUrl, '_blank');
+    }
+  </script>
+</body>
+</html>
 
